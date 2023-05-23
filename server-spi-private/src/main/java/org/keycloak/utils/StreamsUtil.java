@@ -51,6 +51,7 @@ public class StreamsUtil {
         if (iterator.hasNext()) {
             return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, 0), false);
         } else {
+            stream.close();
             throw ex;
         }
     }
