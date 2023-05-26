@@ -51,7 +51,11 @@ public class StreamsUtil {
         if (iterator.hasNext()) {
             return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, 0), false);
         } else {
+            // -- begin moneymeets patch --
+            // Make sure that no connection is kept in case of an exception.
+            // Fixes MD-6762: Datasource 'default': JDBC resources leaked
             stream.close();
+            // -- end moneymeets patch --
             throw ex;
         }
     }
