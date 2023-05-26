@@ -5,6 +5,16 @@ Keycloak is an Open Source Identity and Access Management solution for modern Ap
 This repository contains the source code for the Keycloak Server, Java adapters and the JavaScript adapter.
 
 
+## moneymeets Specific Fixes
+
+At moneymeets the repository keycloak-docker is used to set up and run Keycloak. Internally, it creates a docker container containing Keycloak based on the source of the latest commit in branch moneymeets/20.0.5 of this repository here.
+This fork was created so that moneymeets is able to implement fixes that are not available yet or only available in later Keycloak versions.
+Currently, the following fixes are present in the code:
+
+* MD-6782 Fix update email via impersonated user
+* MD-6762 Datasource 'default': JDBC resources leaked
+
+
 ## Help and Documentation
 
 * [Documentation](https://www.keycloak.org/documentation.html)
