@@ -324,6 +324,7 @@ public class UserResource {
         boolean sameRealm = false;
         String sessionState = auth.adminAuth().getToken().getSessionState();
         if (authenticatedRealm.getId().equals(realm.getId()) && sessionState != null) {
+            logger.debug("IF CASE REACHED");
             sameRealm = true;
             UserSessionModel userSession = lockUserSessionsForModification(session, () -> session.sessions().getUserSession(authenticatedRealm, sessionState));
             AuthenticationManager.expireIdentityCookie(realm, session.getContext().getUri(), clientConnection);
@@ -356,9 +357,9 @@ public class UserResource {
         // authenticationSessionManager.setAuthSessionCookie(userSession.getId(), realm);
 
 
-        // ClientConnection connection = session.getContext().getConnection();
-        // String oldPath = AuthenticationManager.getRealmCookiePath(realm, session.getContext().getUri());
-        // AuthenticationManager.expireCookie(realm, AuthenticationSessionManager.AUTH_SESSION_ID, oldPath, true, connection, ServerCookie.SameSiteAttributeValue.NONE);
+        ClientConnection connection = session.getContext().getConnection();
+        String oldPath = AuthenticationManager.getRealmCookiePath(realm, session.getContext().getUri());
+        AuthenticationManager.expireCookie(realm, AuthenticationSessionManager.AUTH_SESSION_ID, oldPath, true, connection, ServerCookie.SameSiteAttributeValue.NONE);
         // -- end moneymeets patch --
 
         AuthenticationManager.createLoginCookie(session, realm, userSession.getUser(), userSession, session.getContext().getUri(), clientConnection);
