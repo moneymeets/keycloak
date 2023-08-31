@@ -25,6 +25,7 @@ import org.keycloak.authentication.requiredactions.util.RequiredActionsValidator
 import org.keycloak.common.ClientConnection;
 import org.keycloak.common.Profile;
 import org.keycloak.common.util.CollectionUtil;
+import org.keycloak.common.util.ServerCookie;
 import org.keycloak.common.util.Time;
 import org.keycloak.credential.CredentialModel;
 import org.keycloak.email.EmailException;
@@ -143,14 +144,14 @@ public class UserResource {
 
     @Context
     protected HttpHeaders headers;
-    
+
     public UserResource(RealmModel realm, UserModel user, AdminPermissionEvaluator auth, AdminEventBuilder adminEvent) {
         this.auth = auth;
         this.realm = realm;
         this.user = user;
         this.adminEvent = adminEvent.resource(ResourceType.USER);
     }
-    
+
     /**
      * Update the user
      *
@@ -327,6 +328,14 @@ public class UserResource {
             UserSessionModel userSession = lockUserSessionsForModification(session, () -> session.sessions().getUserSession(authenticatedRealm, sessionState));
             AuthenticationManager.expireIdentityCookie(realm, session.getContext().getUri(), clientConnection);
             AuthenticationManager.expireRememberMeCookie(realm, session.getContext().getUri(), clientConnection);
+
+
+            // BEGIN TEST
+            ClientConnection connection = session.getContext().getConnection();
+            String oldPath = AuthenticationManager.getRealmCookiePath(realm, session.getContext().getUri());
+            AuthenticationManager.expireCookie(realm, AuthenticationSessionManager.AUTH_SESSION_ID, oldPath, true, connection, ServerCookie.SameSiteAttributeValue.NONE);
+            // END TEST
+
             AuthenticationManager.backchannelLogout(session, authenticatedRealm, userSession, session.getContext().getUri(), clientConnection, headers, true);
         }
         EventBuilder event = new EventBuilder(realm, session, clientConnection);
