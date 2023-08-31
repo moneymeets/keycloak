@@ -331,7 +331,8 @@ public class UserResource {
 
 
             // BEGIN TEST
-
+            AuthenticationSessionManager authenticationSessionManager = new AuthenticationSessionManager(session);
+            authenticationSessionManager.setAuthSessionCookie(userSession.getId(), realm);
             // END TEST
 
             AuthenticationManager.backchannelLogout(session, authenticatedRealm, userSession, session.getContext().getUri(), clientConnection, headers, true);
@@ -355,9 +356,9 @@ public class UserResource {
         // authenticationSessionManager.setAuthSessionCookie(userSession.getId(), realm);
 
 
-        ClientConnection connection = session.getContext().getConnection();
-        String oldPath = AuthenticationManager.getRealmCookiePath(realm, session.getContext().getUri());
-        AuthenticationManager.expireCookie(realm, AuthenticationSessionManager.AUTH_SESSION_ID, oldPath, true, connection, ServerCookie.SameSiteAttributeValue.NONE);
+        // ClientConnection connection = session.getContext().getConnection();
+        // String oldPath = AuthenticationManager.getRealmCookiePath(realm, session.getContext().getUri());
+        // AuthenticationManager.expireCookie(realm, AuthenticationSessionManager.AUTH_SESSION_ID, oldPath, true, connection, ServerCookie.SameSiteAttributeValue.NONE);
         // -- end moneymeets patch --
 
         AuthenticationManager.createLoginCookie(session, realm, userSession.getUser(), userSession, session.getContext().getUri(), clientConnection);
