@@ -353,8 +353,8 @@ public class UserResource {
         // Otherwise there can be a session mixup as the authentication session can belong to one user while the user
         //  session belongs to another user.
         // When changing the email address of impersonated users it is important for those two sessions to be the same, see MD-6782.
-        AuthenticationSessionManager authenticationSessionManager = new AuthenticationSessionManager(session);
-        authenticationSessionManager.setAuthSessionCookie(userSession.getId(), realm);
+        // AuthenticationSessionManager authenticationSessionManager = new AuthenticationSessionManager(session);
+        // authenticationSessionManager.setAuthSessionCookie(userSession.getId(), realm);
         // -- end moneymeets patch --
 
         AuthenticationManager.createLoginCookie(session, realm, userSession.getUser(), userSession, session.getContext().getUri(), clientConnection);
