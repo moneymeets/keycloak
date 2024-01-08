@@ -18,7 +18,11 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Build Keycloak
-        uses: ./.github/actions/build-keycloak
+        run: mvn clean install -Pdistribution -DskipTests -DskipExamples -DskipTestsuite
+
+      - name: Upload Keycloak artifact
+        id: store-keycloak
+        uses: actions/upload-artifact@v4
         with:
           upload-dist: true
           upload-m2-repo: false
@@ -32,7 +36,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Download Keycloak distribution
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: keycloak-dist
           path: quarkus/container
@@ -44,7 +48,7 @@ jobs:
           aws-region: ${{ vars.ECR_PUBLIC_REGION }}
 
       - id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
         with:
           registry-type: public
 
