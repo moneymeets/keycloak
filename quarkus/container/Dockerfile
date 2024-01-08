@@ -1,17 +1,15 @@
 FROM registry.access.redhat.com/ubi8-minimal AS build-env
 
 ENV KEYCLOAK_VERSION 20.0.5
-ARG KEYCLOAK_DIST=https://github.com/keycloak/keycloak/releases/download/$KEYCLOAK_VERSION/keycloak-$KEYCLOAK_VERSION.tar.gz
+ARG KEYCLOAK_DIST=keycloak-$KEYCLOAK_VERSION.tar.gz
 
 RUN microdnf install -y tar gzip
 
-ADD $KEYCLOAK_DIST /tmp/keycloak/
+COPY $KEYCLOAK_DIST /tmp/keycloak/
 
 # The next step makes it uniform for local development and upstream built.
 # If it is a local tar archive then it is unpacked, if from remote is just downloaded.
-RUN (cd /tmp/keycloak && \
-    tar -xvf /tmp/keycloak/keycloak-*.tar.gz && \
-    rm /tmp/keycloak/keycloak-*.tar.gz) || true
+RUN cd /tmp/keycloak && tar -xvf $KEYCLOAK_DIST && rm $KEYCLOAK_DIST
 
 RUN mv /tmp/keycloak/keycloak-* /opt/keycloak && mkdir -p /opt/keycloak/data
 
