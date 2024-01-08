@@ -31,21 +31,26 @@ jobs:
         id: store-keycloak
         uses: actions/upload-artifact@v4
         with:
-          name: keycloak-distribution
+          name: keycloak-distribution-${{ github.sha }}
           retention-days: 1
           path: quarkus/dist/target/keycloak*.tar.gz
 
   image-build:
     runs-on: ubuntu-latest
-    needs: [maven-build]
+    needs:
+      - maven-build
+
+    env:
+      DOCKER_WORKING_DIR: ${{ github.workspace }}/quarkus/container
+
     steps:
       - uses: actions/checkout@v3
 
       - name: Download Keycloak distribution
         uses: actions/download-artifact@v4
         with:
-          name: keycloak-distribution
-          path: quarkus/container
+          name: keycloak-distribution-${{ github.sha }}
+          path: ${{ env.DOCKER_WORKING_DIR }}
 
       - uses: aws-actions/configure-aws-credentials@v2
         with:
