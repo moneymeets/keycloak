@@ -29,23 +29,28 @@ jobs:
 
       - name: Upload Keycloak artifact
         id: store-keycloak
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: keycloak-distribution
+          name: keycloak-distribution-${{ github.sha }}
           retention-days: 1
           path: quarkus/dist/target/keycloak*.tar.gz
 
   image-build:
     runs-on: ubuntu-latest
-    needs: [maven-build]
+    needs:
+      - maven-build
+
+    env:
+      DOCKER_WORKING_DIR: ${{ github.workspace }}/quarkus/container
+
     steps:
       - uses: actions/checkout@v3
 
       - name: Download Keycloak distribution
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: keycloak-distribution
-          path: quarkus/container
+          name: keycloak-distribution-${{ github.sha }}
+          path: ${{ env.DOCKER_WORKING_DIR }}
 
       - uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -54,11 +59,16 @@ jobs:
           aws-region: ${{ vars.ECR_PUBLIC_REGION }}
 
       - id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
         with:
           registry-type: public
 
-      - name: Build and upload image
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/setup-qemu-action@v3
+
+      - name: Set variables
+        id: set-variables
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
@@ -71,7 +81,14 @@ jobs:
             export IMAGE_TAG=$KEYCLOAK_REPOSITORY:$(echo ${GITHUB_REF_NAME} | awk '{print tolower($0)}' | sed -e 's|/|-|')
           fi
 
-          cd quarkus/container
-          docker build --build-arg KEYCLOAK_DIST=$(ls keycloak-*.tar.gz) . -t ${IMAGE_TAG}
+          echo "image-url-with-tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
 
-          docker push ${IMAGE_TAG}
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        env:
+          IMAGE_URL_WITH_TAG: ${{ steps.set-variables.outputs.image-url-with-tag }}
+        with:
+          context: ${{ env.DOCKER_WORKING_DIR }}
+          push: true
+          tags: ${{ env.IMAGE_URL_WITH_TAG }}
+          platforms: linux/amd64,linux/arm64
