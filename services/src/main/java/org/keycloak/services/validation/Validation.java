@@ -17,6 +17,7 @@
 
 package org.keycloak.services.validation;
 
+import org.hazlewood.connor.bottema.emailaddress.EmailAddressValidator;
 import org.keycloak.models.utils.FormMessage;
 import org.keycloak.userprofile.ValidationException;
 import org.keycloak.utils.EmailValidationUtil;
@@ -34,6 +35,7 @@ public class Validation {
     public static final String FIELD_OTP_CODE = "totp";
     public static final String FIELD_OTP_LABEL = "userLabel";
 
+    // Actually allow same emails like angular. See ValidationTest.testEmailValidation()
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^[\\p{IsLatin}|\\p{IsCommon}]+$");
 
     private static void addError(List<FormMessage> errors, String field, String message, Object... parameters){
@@ -42,17 +44,17 @@ public class Validation {
 
     /**
      * Check if string is empty (null or lenght is 0)
-     * 
+     *
      * @param s to check
      * @return true if string is empty
      */
     public static boolean isEmpty(String s) {
         return s == null || s.length() == 0;
     }
-    
+
     /**
      * Check if string is blank (null or lenght is 0 or contains only white characters)
-     * 
+     *
      * @param s to check
      * @return true if string is blank
      */
@@ -61,7 +63,7 @@ public class Validation {
     }
 
     public static boolean isEmailValid(String email) {
-        return EmailValidationUtil.isValidEmail(email);
+        return EmailAddressValidator.isValidStrict(email);
     }
 
     public static boolean isUsernameValid(String username) {

@@ -27,6 +27,8 @@ import org.keycloak.validate.ValidationContext;
 import org.keycloak.validate.ValidationError;
 import org.keycloak.validate.ValidatorConfig;
 
+import org.hazlewood.connor.bottema.emailaddress.EmailAddressValidator;
+
 /**
  * Email format validation - accepts plain string and collection of strings, for basic behavior like null/blank values
  * handling and collections support see {@link AbstractStringValidator}.
@@ -39,7 +41,6 @@ public class EmailValidator extends AbstractStringValidator implements Configure
 
     public static final String MESSAGE_INVALID_EMAIL = "error-invalid-email";
 
-
     @Override
     public String getId() {
         return ID;
@@ -47,11 +48,11 @@ public class EmailValidator extends AbstractStringValidator implements Configure
 
     @Override
     protected void doValidate(String value, String inputHint, ValidationContext context, ValidatorConfig config) {
-        if (!EmailValidationUtil.isValidEmail(value)) {
+        if (!EmailAddressValidator.isValidStrict(value)) {
             context.addError(new ValidationError(ID, inputHint, MESSAGE_INVALID_EMAIL, value));
         }
     }
-    
+
     @Override
     public String getHelpText() {
         return "Email format validator";
