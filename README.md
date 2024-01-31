@@ -14,6 +14,7 @@ Currently, the following fixes are present in the code:
 * Back port of fix [keycloak/keycloak#15619](https://github.com/keycloak/keycloak/pull/15619).
 * MD-6782 Fix update email via impersonated user
 * MD-6762 Datasource 'default': JDBC resources leaked
+* MD-6730 fix email validation to be RFC compliant.
 
 
 ## Help and Documentation
