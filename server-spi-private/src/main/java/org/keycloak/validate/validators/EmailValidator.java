@@ -18,7 +18,6 @@ package org.keycloak.validate.validators;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.keycloak.provider.ConfiguredProvider;
 import org.keycloak.provider.ProviderConfigProperty;
@@ -26,6 +25,8 @@ import org.keycloak.validate.AbstractStringValidator;
 import org.keycloak.validate.ValidationContext;
 import org.keycloak.validate.ValidationError;
 import org.keycloak.validate.ValidatorConfig;
+
+import org.hazlewood.connor.bottema.emailaddress.EmailAddressValidator;
 
 /**
  * Email format validation - accepts plain string and collection of strings, for basic behavior like null/blank values
@@ -39,9 +40,6 @@ public class EmailValidator extends AbstractStringValidator implements Configure
 
     public static final String MESSAGE_INVALID_EMAIL = "error-invalid-email";
 
-    // Actually allow same emails like angular. See ValidationTest.testEmailValidation()
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*");
-
     @Override
     public String getId() {
         return ID;
@@ -49,7 +47,7 @@ public class EmailValidator extends AbstractStringValidator implements Configure
 
     @Override
     protected void doValidate(String value, String inputHint, ValidationContext context, ValidatorConfig config) {
-        if (!EMAIL_PATTERN.matcher(value).matches()) {
+        if (!EmailAddressValidator.isValidStrict(value)) {
             context.addError(new ValidationError(ID, inputHint, MESSAGE_INVALID_EMAIL, value));
         }
     }
