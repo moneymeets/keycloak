@@ -17,6 +17,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.DEFAULT_JDK_VERSION }}
+          distribution: ${{ env.DEFAULT_JDK_DIST }}
+
       - name: Build Keycloak
         run: mvn clean install -Pdistribution -DskipTests -DskipExamples -DskipTestsuite
 
