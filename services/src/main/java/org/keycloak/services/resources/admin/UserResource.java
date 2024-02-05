@@ -982,7 +982,7 @@ public class UserResource {
                     .sendVerifyEmail(link, TimeUnit.SECONDS.toMinutes(result.lifespan));
         } catch (EmailException e) {
             ServicesLogger.LOGGER.failedToSendEmail(e);
-            throw new ErrorResponseException(ErrorResponse.error("Failed to send verify email", Status.INTERNAL_SERVER_ERROR));
+            throw ErrorResponse.error("Failed to send verify email", Status.INTERNAL_SERVER_ERROR);
         }
 
         adminEvent.operation(OperationType.ACTION).resourcePath(session.getContext().getUri()).success();
@@ -1125,15 +1125,15 @@ public class UserResource {
 
     private SendEmailParams verifySendEmailParams(String redirectUri, String clientId, Integer lifespan) {
         if (user.getEmail() == null) {
-            throw new ErrorResponseException(ErrorResponse.error("User email missing", Status.BAD_REQUEST));
+            throw ErrorResponse.error("User email missing", Status.BAD_REQUEST);
         }
 
         if (!user.isEnabled()) {
-            throw new ErrorResponseException(ErrorResponse.error("User is disabled", Status.BAD_REQUEST));
+            throw ErrorResponse.error("User is disabled", Status.BAD_REQUEST);
         }
 
         if (redirectUri != null && clientId == null) {
-            throw new ErrorResponseException(ErrorResponse.error("Client id missing", Status.BAD_REQUEST));
+            throw ErrorResponse.error("Client id missing", Status.BAD_REQUEST);
         }
 
         if (clientId == null) {
@@ -1143,17 +1143,17 @@ public class UserResource {
         ClientModel client = realm.getClientByClientId(clientId);
         if (client == null) {
             logger.debugf("Client %s doesn't exist", clientId);
-            throw new ErrorResponseException(ErrorResponse.error("Client doesn't exist", Status.BAD_REQUEST));
+            throw ErrorResponse.error("Client doesn't exist", Status.BAD_REQUEST);
         }
         if (!client.isEnabled()) {
             logger.debugf("Client %s is not enabled", clientId);
-            throw new ErrorResponseException(ErrorResponse.error("Client is not enabled", Status.BAD_REQUEST));
+            throw ErrorResponse.error("Client is not enabled", Status.BAD_REQUEST);
         }
 
         if (redirectUri != null) {
             redirectUri = RedirectUtils.verifyRedirectUri(session, redirectUri, client);
             if (redirectUri == null) {
-                throw new ErrorResponseException(ErrorResponse.error("Invalid redirect uri.", Status.BAD_REQUEST));
+                throw ErrorResponse.error("Invalid redirect uri.", Status.BAD_REQUEST);
             }
         }
 
