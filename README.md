@@ -13,6 +13,7 @@ Currently, the following fixes are present in the code:
 
 * MD-6399 send correct email when calling the verify email endpoint
 * MD-6730 fix email validation to be RFC compliant.
+* MD-7399 update email validator (partially reverts MD-6730)
 
 
 ## Help and Documentation

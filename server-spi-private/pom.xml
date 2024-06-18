@@ -60,7 +60,6 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -78,9 +77,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.bbottema</groupId>
-            <artifactId>emailaddress-rfc2822</artifactId>
-            <version>2.3.1</version>
+            <groupId>com.sanctionco.jmail</groupId>
+            <artifactId>jmail</artifactId>
+            <version>1.6.2</version>
         </dependency>
     </dependencies>
 

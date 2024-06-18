@@ -21,13 +21,12 @@ import java.util.List;
 
 import org.keycloak.provider.ConfiguredProvider;
 import org.keycloak.provider.ProviderConfigProperty;
-import org.keycloak.utils.EmailValidationUtil;
 import org.keycloak.validate.AbstractStringValidator;
 import org.keycloak.validate.ValidationContext;
 import org.keycloak.validate.ValidationError;
 import org.keycloak.validate.ValidatorConfig;
 
-import org.hazlewood.connor.bottema.emailaddress.EmailAddressValidator;
+import com.sanctionco.jmail.JMail;
 
 /**
  * Email format validation - accepts plain string and collection of strings, for basic behavior like null/blank values
@@ -48,7 +47,7 @@ public class EmailValidator extends AbstractStringValidator implements Configure
 
     @Override
     protected void doValidate(String value, String inputHint, ValidationContext context, ValidatorConfig config) {
-        if (!EmailAddressValidator.isValidStrict(value)) {
+        if (!JMail.isValid(value)) {
             context.addError(new ValidationError(ID, inputHint, MESSAGE_INVALID_EMAIL, value));
         }
     }

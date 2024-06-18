@@ -17,10 +17,9 @@
 
 package org.keycloak.services.validation;
 
-import org.hazlewood.connor.bottema.emailaddress.EmailAddressValidator;
+import com.sanctionco.jmail.JMail;
 import org.keycloak.models.utils.FormMessage;
 import org.keycloak.userprofile.ValidationException;
-import org.keycloak.utils.EmailValidationUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +62,7 @@ public class Validation {
     }
 
     public static boolean isEmailValid(String email) {
-        return EmailAddressValidator.isValidStrict(email);
+        return JMail.isValid(email);
     }
 
     public static boolean isUsernameValid(String username) {
